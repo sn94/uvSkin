@@ -1,7 +1,7 @@
 from bottle import get,post, run, request, template
 import os
 import cv2
-import uvapp_find_pho
+import Fototipo_detect
 
 
 @get("/name")
@@ -40,8 +40,8 @@ def receive():
     else:
         upload.save("./")
         #leer archivo
-        read_img= uvapp_find_pho.Uvapp_find_pho() 
-        intensidad= read_img.procesar_imagen(  filename)
+        read_img= Fototipo_detect.Fototipo_detect( filename   ) 
+        intensidad= read_img.determ_phototype()
         #borrar archivo
         from os import remove
         remove( filename)

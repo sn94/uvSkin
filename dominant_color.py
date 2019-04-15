@@ -21,6 +21,9 @@ def get_dominant_color(image, k=4, image_processing_size = None):
     >>> get_dominant_color(my_image, k=4, image_processing_size = (25, 25))
     [56.2423442, 34.0834233, 70.1234123]
     """
+    
+    
+        
     #resize image if new dims provided
     if image_processing_size is not None:
         image = cv2.resize(image, image_processing_size, 
@@ -38,9 +41,8 @@ def get_dominant_color(image, k=4, image_processing_size = None):
 
     #subset out most popular centroid
     dominant_color = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
-     
     return list(dominant_color)
 
 
-img_arr = cv2.imread( "red.png" )
-print( get_dominant_color( img_arr, k=4, image_processing_size= (1440,864) ) )
+#img_arr = cv2.imread( "red.png" )
+#print( get_dominant_color( img_arr, k=4, image_processing_size= (1440,864) ) )

@@ -21,13 +21,17 @@ class Fototipo_detect:
 
 
     def __init__( self, ruta):
-        #leer imagen
+        #leer imagen 
         img_arr = cv2.imread( ruta )
-        b,g,r = cv2.split( img_arr )       # get b,g,r
+        #RESIZE
+        b,g,r = cv2.split( img_arr )# get b,g,r
         self.X = cv2.merge([r,g,b])     # switch it to rgb
+        #COLOR DOMINANTE
         import dominant_color
         self.color_dominante= dominant_color.get_dominant_color(  self.X,  k=4, image_processing_size= ( self.X.shape[0], self.X.shape[1])  )
-
+        #CALCULAR DISTANCIAS
+        self.calculate_distances()
+        
 
     def color_euclidean_distance( self,  color_rgb, color_rgb2):
         #https://lmcaraig.com/color-quantization-using-k-means/
@@ -49,16 +53,26 @@ class Fototipo_detect:
             
     def coord_von_luschan_color(self):
         newlist= sorted(  self.distancias_eu,  key=  lambda d:   d["distancia"]  )
-        return newlist[0]['distancia']
+        shorter_distance_color_index=  newlist[0]['index'] + 1 #se buscara en el arreglo de fototipos vs VonLuschan
+        return shorter_distance_color_index
 
+
+    def determ_phototype(self):
+        shorter_distance_color_index= self.coord_von_luschan_color()
+
+        for ky in self.fototipo_croma.keys():
+            for wanted_indx in self.fototipo_croma[ky]: 
+                if wanted_indx == shorter_distance_color_index:
+                    return ky
+        return 0
 
 
 import time
-
+print("TOtal")     
 ini=time.time()
-ff= Fototipo_detect( "red.png")
-ff.calculate_distances()
-print(ff.coord_von_luschan_color() ) 
+ff= Fototipo_detect( "fototipo_6.jpg")
+print("fototipo", ff.determ_phototype() ) 
 fin=time.time()
 print( fin-ini, "sec")
+
 
