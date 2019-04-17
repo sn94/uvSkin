@@ -39,13 +39,33 @@ def receive():
 
     else:
         upload.save("./")
+	################
+	#recortar imagen
+        """filename_crop= name+"_crop"+ext
+        img= cv2.imread( filename)
+        crop_img = img[1200:1290, 1000:1090]
+        #suavizar
+        #Crea el kernel
+        import numpy as np
+        kernel = np.ones((5,5),np.float32)/50
+        #Filtra la imagen utilizando el kernel anterior
+        dst = cv2.filter2D( crop_img,-1,kernel)
+        cv2.imwrite( filename_crop , dst)
+        """
+
+	################
         #leer archivo
-        read_img= Fototipo_detect.Fototipo_detect( filename   ) 
+        read_img= Fototipo_detect.Fototipo_detect( filename  ) 
         intensidad= read_img.determ_phototype()
+
+
+	################
         #borrar archivo
         from os import remove
         remove( filename)
-        rv = { "tone": intensidad , "estado": 200}
+	#remove( filename)
+
+        rv = { "phototype": intensidad , "estado": 200}
 
         response.content_type = 'application/json'
         return dumps(rv)

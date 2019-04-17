@@ -67,12 +67,14 @@ class Fototipo_detect:
         return 0
 
 
+"""
 import time
 print("TOtal")     
 ini=time.time()
-ff= Fototipo_detect( "fototipo_6.jpg")
-print("fototipo", ff.determ_phototype() ) 
+ff= Fototipo_detect( "f3.png")
+print("fototipo"    , ff.determ_phototype() ) 
 fin=time.time()
-print( fin-ini, "sec")
+print( fin-ini  , "sec")
+"""
 
 
