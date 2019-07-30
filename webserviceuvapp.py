@@ -3,6 +3,9 @@ import fcm
 
 #cnZDJimhpGs:APA91bFuVOYE6I0HTWKv7AChnwu55Y97AvmSJ_Ql9sj8bUpaVKl8CU3zNnGrnCCBqIfml7Piht12F73n1tvhBd1C6rv6AAvNIN44ZgZSnxP6grNw2NkhwjMztKUjK4DF7DV4yBEUUxSE
 
+fcmObject= fcm.MyFCM()
+
+
 @get('/uvapp/signup') # or @route('/login')
 def login():
     return '''
@@ -24,7 +27,7 @@ def do_login():
 
 @get('/uvapp/users/all')
 def get_all_users():
-    fcm.MyFCM().get_data_from_firestore()
+    fcmObject.get_data_from_firestore()
 
 
 @get('/uvapp/notificar/<iuv:int>')
@@ -33,7 +36,7 @@ def send_messages_to_all(iuv):
 
 @get('/uvapp/notificar2')
 def send_messages_to_all2():
-    fcm.MyFCM().messaging_from_firestore2()
+    fcmObject.messaging_from_firestore2()
 
  
 

@@ -48,7 +48,7 @@ class MyFCM:
         from firebase_admin import messaging 
         cred = credentials.RefreshToken( 'uvapp-246400-04d67e9d0c21firebasecount.json')
         #cred = credentials.Certificate('mensajeador-5822102cebdc.json')
-        firebase_admin.initialize_app(  cred)
+        app=firebase_admin.initialize_app(  cred)
         a_notification = messaging.Notification (  title= title, body=  body)
         message = messaging.Message(  data= None, notification=a_notification,  token=registration_token,)
         # Send a message to the device corresponding to the provided
@@ -56,6 +56,7 @@ class MyFCM:
         response = messaging.send(message)
         # Response is a message ID string.
         print('Successfully sent message:', response)
+        firebase_admin.delete_app(  app )#borrar instancia anterior
 
 
 
@@ -66,10 +67,11 @@ class MyFCM:
         from firebase_admin import credentials 
         from firebase_admin import messaging
         cred = credentials.Certificate('uvapp-246400-04d67e9d0c21firebasecount.json')
-        firebase_admin.initialize_app(  cred)   
+        app= firebase_admin.initialize_app(  cred)   
         message = messaging.Message( data={  'score': '850',  'time': '2:45',  },   token=registration_token) 
         response = messaging.send(message) 
         print('Successfully sent message:', response)
+        firebase_admin.delete_app(  app )#borrar instancia anterior
 
 
 
@@ -81,10 +83,11 @@ class MyFCM:
         from firebase_admin import firestore
         # Use a service account
         cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
-        firebase_admin.initialize_app(cred)
+        app= firebase_admin.initialize_app(cred)
         db = firestore.client()
         doc_ref = db.collection("usuarios").document( )
         doc_ref.set(       {  "nick": params['nick'], "token": params['token']   })
+        firebase_admin.delete_app(  app )#borrar instancia anterior 
         #devolver ok
         return "OK"
 
@@ -100,17 +103,17 @@ class MyFCM:
         #'uvapp-246400-04d67e9d0c21firebasecount.json'
         #'uvapp-246400-6c35cea9bf32default.json
         cred = credentials.Certificate( 'uvapp-246400-04d67e9d0c21firebasecount.json' )
-        firebase_admin.initialize_app(   cred )
+        app= firebase_admin.initialize_app(   cred )
         
         db = firestore.client() 
         users_ref = db.collection(u'usuarios')
-        docs = users_ref.get() 
-        firebase_admin.delete_app(   firebase_admin.get_app() )#borrar instancia anterior
-         
+        docs = users_ref.get()
         for doc in docs:
             #registro_id= doc.id
             registro_user=doc.to_dict()
             print( registro_user )
+        firebase_admin.delete_app(   app )#borrar instancia anterior
+        
 
     def messaging_from_firestore(self,  iuv   ):
         #consulta lo de cloud firestore
@@ -123,37 +126,37 @@ class MyFCM:
         #'uvapp-246400-04d67e9d0c21firebasecount.json'
         #'uvapp-246400-6c35cea9bf32default.json
         cred = credentials.Certificate( 'uvapp-246400-04d67e9d0c21firebasecount.json' )
-        firebase_admin.initialize_app(   cred )
+        app= firebase_admin.initialize_app(   cred )
         
         db = firestore.client() 
         users_ref = db.collection(u'usuarios')
-        docs = users_ref.get() 
-        firebase_admin.delete_app(   firebase_admin.get_app() )#borrar instancia anterior
+        docs = users_ref.get()  
         
         for doc in docs:
             #registro_id= doc.id
             registro_user=doc.to_dict()
             token=  registro_user['token']  
             self.send_a_notificacion_http_v1( token , iuv  )
-
+        firebase_admin.delete_app(   app )#borrar instancia anterior
+        
 
     def messaging_from_firestore2(self ):
         #consulta lo de cloud firestore
         # Use a service account
         import firebase_admin
         from firebase_admin import credentials
-        from firebase_admin import firestore   
 
         #cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
         #'uvapp-246400-04d67e9d0c21firebasecount.json'
         #'uvapp-246400-6c35cea9bf32default.json
-        cred = credentials.Certificate( 'uvapp-246400-04d67e9d0c21firebasecount.json' )
-        firebase_admin.initialize_app(   cred )
-        
+        cred = credentials.Certificate( 'uvapp-246400-04d67e9d0c21firebasecount.json' ) 
+        app= firebase_admin.initialize_app(   cred )
+
+        from firebase_admin import firestore   
         db = firestore.client() 
         users_ref = db.collection(u'usuarios')
         docs = users_ref.get() 
-        #firebase_admin.delete_app(   firebase_admin.get_app() )#borrar instancia anterior
+        
         from firebase_admin import messaging
         for doc in docs:
             #registro_id= doc.id
@@ -167,3 +170,4 @@ class MyFCM:
             # Response is a message ID string.
             print('Successfully sent message:', response)
             #self.send_a_notification_sdk_admin( "iuv alto","cuidate",token )
+        firebase_admin.delete_app(   app )#borrar instancia anterior
