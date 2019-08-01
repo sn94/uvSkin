@@ -89,7 +89,7 @@ class MyFCM:
         doc_ref.set(       {  "nick": params['nick'], "token": params['token']   })
         firebase_admin.delete_app(  app )#borrar instancia anterior 
         #devolver ok
-        return "OK"
+        return {"estado": 200, "msg": "USUARIO CREADO!" }
 
     def get_data_from_firestore(self ):
         #consulta lo de cloud firestore

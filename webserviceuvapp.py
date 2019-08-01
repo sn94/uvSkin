@@ -1,10 +1,9 @@
-from bottle import get,post, run, request
+from bottle import get,post, run, request,response
 import fcm
 
 #cnZDJimhpGs:APA91bFuVOYE6I0HTWKv7AChnwu55Y97AvmSJ_Ql9sj8bUpaVKl8CU3zNnGrnCCBqIfml7Piht12F73n1tvhBd1C6rv6AAvNIN44ZgZSnxP6grNw2NkhwjMztKUjK4DF7DV4yBEUUxSE
 
-fcmObject= fcm.MyFCM()
-
+ 
 
 @get('/uvapp/signup') # or @route('/login')
 def login():
@@ -19,15 +18,18 @@ def login():
 
 @post('/uvapp/signup') # or @route('/login', method='POST')
 def do_login():
-    nick = request.forms.get('nick')
-    token = request.forms.get('token')
-    fcm.MyFCM().add_data_to_firestore( { "nick": nick, "token": token  }  ) 
+    data= request.json
+    nick = data['nick']
+    token = data['token']
+    response.content_type = 'application/json' 
+    return fcm.MyFCM().add_data_to_firestore( { "nick": nick, "token": token  }  )
+
 
 
 
 @get('/uvapp/users/all')
 def get_all_users():
-    fcmObject.get_data_from_firestore()
+    fcm.MyFCM().get_data_from_firestore()
 
 
 @get('/uvapp/notificar/<iuv:int>')
@@ -36,7 +38,7 @@ def send_messages_to_all(iuv):
 
 @get('/uvapp/notificar2')
 def send_messages_to_all2():
-    fcmObject.messaging_from_firestore2()
+    fcm.MyFCM().messaging_from_firestore2()
 
  
 
@@ -56,4 +58,4 @@ def single_message_post():
 
 
 
-run(host='192.168.0.13', port=8080)
+run(host='192.168.0.12', port=8080)
