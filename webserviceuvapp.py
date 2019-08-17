@@ -1,4 +1,4 @@
-from bottle import get,post, run, request,response
+from bottle import get,post,delete, run, request,response
 import fcm
 
 #cnZDJimhpGs:APA91bFuVOYE6I0HTWKv7AChnwu55Y97AvmSJ_Ql9sj8bUpaVKl8CU3zNnGrnCCBqIfml7Piht12F73n1tvhBd1C6rv6AAvNIN44ZgZSnxP6grNw2NkhwjMztKUjK4DF7DV4yBEUUxSE
@@ -7,8 +7,9 @@ import fcm
 
 @get('/uvapp/signup') # or @route('/login')
 def login():
+    
     return '''
-        <form action="/uvapp/signup" method="post">
+        <form action="/uvapp/signup" method="post" enctype="application/json">
             Username: <input name="nick" type="text" />
             Token: <input name="token" type="text" />
             <input value="Login" type="submit" />
@@ -18,11 +19,17 @@ def login():
 
 @post('/uvapp/signup') # or @route('/login', method='POST')
 def do_login():
+    
     data= request.json
     nick = data['nick']
     token = data['token']
     response.content_type = 'application/json' 
     return fcm.MyFCM().add_data_to_firestore( { "nick": nick, "token": token  }  )
+
+
+@get('/uvapp/delete/<nick>')
+def delete_user( nick):
+    fcm.MyFCM().exist_nick(nick)
 
 
 
@@ -36,11 +43,14 @@ def get_all_users():
 def send_messages_to_all(iuv):
     fcm.MyFCM().messaging_from_firestore(   iuv )
 
+
+ 
+ ### PRUEBAS
+
 @get('/uvapp/notificar2')
 def send_messages_to_all2():
     fcm.MyFCM().messaging_from_firestore2()
 
- 
 
 @get('/msg') # or @route('/login')
 def single_message_get():
