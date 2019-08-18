@@ -9,7 +9,7 @@ import fcm
 def login():
     
     return '''
-        <form action="/uvapp/signup" method="post" enctype="application/json">
+        <form action="/uvapp/signup" method="post" >
             Username: <input name="nick" type="text" />
             Token: <input name="token" type="text" />
             <input value="Login" type="submit" />
@@ -18,18 +18,25 @@ def login():
 
 
 @post('/uvapp/signup') # or @route('/login', method='POST')
-def do_login():
-    
-    data= request.json
-    nick = data['nick']
-    token = data['token']
+def do_login(): 
+    nick= ""
+    token=""
+    if request.json != None:
+        data= request.json
+        nick = data['nick']
+        token = data['token']
+    else:
+        data=   request.forms
+        nick = data.get("nick")
+        token = data.get("token")
+
     response.content_type = 'application/json' 
     return fcm.MyFCM().add_data_to_firestore( { "nick": nick, "token": token  }  )
 
 
 @get('/uvapp/delete/<nick>')
 def delete_user( nick):
-    fcm.MyFCM().exist_nick(nick)
+    return fcm.MyFCM().del_data_to_firestore( nick )
 
 
 

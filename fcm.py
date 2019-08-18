@@ -76,20 +76,23 @@ class MyFCM:
 
 
     def add_data_to_firestore(self, params):
-        #guardar en firestore
-        #iniciar google cloud platform
-        import firebase_admin
-        from firebase_admin import credentials
-        from firebase_admin import firestore
-        # Use a service account
-        cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
-        app= firebase_admin.initialize_app(cred)
-        db = firestore.client()
-        doc_ref = db.collection("usuarios").document( )
-        doc_ref.set(       {  "nick": params['nick'], "token": params['token']   })
-        firebase_admin.delete_app(  app )#borrar instancia anterior 
-        #devolver ok
-        return {"estado": 200, "msg": "USUARIO CREADO!" }
+        if self.exist_nick(  params['nick'] ):
+            return {"estado": 400, "msg": "NICK YA REGISTRADO!" }
+        else:
+            #guardar en firestore
+            #iniciar google cloud platform
+            import firebase_admin
+            from firebase_admin import credentials
+            from firebase_admin import firestore
+            # Use a service account
+            cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
+            app= firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            doc_ref = db.collection("usuarios").document( )
+            doc_ref.set(       {  "nick": params['nick'], "token": params['token']   })
+            firebase_admin.delete_app(  app )#borrar instancia anterior 
+            #devolver ok
+            return {"estado": 200, "msg": "USUARIO CREADO!" }
 
     def get_data_from_firestore(self ):
         #consulta lo de cloud firestore
@@ -140,24 +143,27 @@ class MyFCM:
 
 
     def del_data_to_firestore(self, nick):
-        #guardar en firestore
-        #iniciar google cloud platform
-        import firebase_admin
-        from firebase_admin import credentials
-        from firebase_admin import firestore
-        # Use a service account
-        cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
-        app= firebase_admin.initialize_app(cred)
-        db = firestore.client()
-        usu_ref = db.collection("usuarios")
-        users_ref= usu_ref.where( 'nick' , '==', nick )
-        docs = users_ref.get()
-        for doc in docs:
-            doc.reference.delete() 
-             
-        firebase_admin.delete_app(  app )#borrar instancia anterior 
-        #devolver ok
-        return {"estado": 200, "msg": "USUARIO BORRADO!" }
+        if not self.exist_nick(  nick ):
+            return {"estado":400, "msg": "NO EXISTE ESE NICK"}
+        else:
+            #guardar en firestore
+            #iniciar google cloud platform
+            import firebase_admin
+            from firebase_admin import credentials
+            from firebase_admin import firestore
+            # Use a service account
+            cred = credentials.Certificate('uvapp-246400-9e75d4d9608a.json')
+            app= firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            usu_ref = db.collection("usuarios")
+            users_ref= usu_ref.where( 'nick' , '==', nick )
+            docs = users_ref.get()
+            for doc in docs:
+                doc.reference.delete() 
+                
+            firebase_admin.delete_app(  app )#borrar instancia anterior 
+            #devolver ok
+            return {"estado": 200, "msg": "USUARIO BORRADO!" }
 
 
     def messaging_from_firestore(self,  iuv   ):
