@@ -11,7 +11,7 @@ alerted_state= False
 iuv_alerted_state= 1
 
 def notificar(  iuv  ): 
-    url="http://192.168.0.13:8080/uvapp/notificar/"+ str( iuv ) 
+    url="http://192.168.0.12:8080/uvapp/notificar/"+ str( iuv ) 
     import requests
     req = requests.get( url   )
     print( req.status_code, req)
@@ -25,6 +25,8 @@ while True:
         if iuv > 2  and  iuv_alerted_state != iuv :
             iuv_alerted_state= iuv 
             notificar( iuv )
+        else:
+            print("IUV muy bajo aun")
     except:
         print("hubo un error")
         break

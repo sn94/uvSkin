@@ -68,7 +68,7 @@ class MyFCM:
         from firebase_admin import messaging
         cred = credentials.Certificate('uvapp-246400-04d67e9d0c21firebasecount.json')
         app= firebase_admin.initialize_app(  cred)   
-        message = messaging.Message( data={  'score': '850',  'time': '2:45',  },   token=registration_token) 
+        message = messaging.Message( data={  'title': title,  'body': body,  },   token=registration_token) 
         response = messaging.send(message) 
         print('Successfully sent message:', response)
         firebase_admin.delete_app(  app )#borrar instancia anterior
@@ -183,12 +183,15 @@ class MyFCM:
         users_ref = db.collection(u'usuarios')
         docs = users_ref.get()  
         
+        firebase_admin.delete_app(   app )#borrar instancia anterior
+
         for doc in docs:
             #registro_id= doc.id
             registro_user=doc.to_dict()
             token=  registro_user['token']  
             self.send_a_notificacion_http_v1( token , iuv  )
-        firebase_admin.delete_app(   app )#borrar instancia anterior
+            
+        
         
 
     def messaging_from_firestore2(self ):

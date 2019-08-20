@@ -48,7 +48,7 @@ def get_all_users():
 
 @get('/uvapp/notificar/<iuv:int>')
 def send_messages_to_all(iuv):
-    fcm.MyFCM().messaging_from_firestore(   iuv )
+    fcm.MyFCM().messaging_from_firestore(   str(iuv) )
 
 
  
