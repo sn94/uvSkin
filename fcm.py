@@ -26,12 +26,14 @@ class MyFCM:
         'Content-Type': 'application/json; UTF-8'}
         import requests, json
         msgtext=  "iuv alto "+ str( iuv)
-        data= { 'message':
-        {
-        "notification": { "title": "Atencion!!","body": msgtext},
+        data= { 
+            'message':
+        { "notification": { "title": "Atencion!!","body": msgtext},
+        "android":{ "ttl":"86400s", "notification":{  "click_action":"NOTIFICAME"   }},
         "data": { "story_id": "story_12345"}  , 
         "token":  token,
         } }
+        #,"android":{ "ttl":"86400s", "notification":{  "click_action":"NOTIFICAME"  }
         
         req = requests.post( url, data= json.dumps( data) , headers= headers )
         print( req.status_code, req)
@@ -68,7 +70,7 @@ class MyFCM:
         from firebase_admin import messaging
         cred = credentials.Certificate('uvapp-246400-04d67e9d0c21firebasecount.json')
         app= firebase_admin.initialize_app(  cred)   
-        message = messaging.Message( data={  'title': title,  'body': body,  },   token=registration_token) 
+        message = messaging.Message( data={  'title': title,  'body': body  },    token=registration_token) 
         response = messaging.send(message) 
         print('Successfully sent message:', response)
         firebase_admin.delete_app(  app )#borrar instancia anterior
@@ -189,7 +191,8 @@ class MyFCM:
             #registro_id= doc.id
             registro_user=doc.to_dict()
             token=  registro_user['token']  
-            self.send_a_notificacion_http_v1( token , iuv  )
+            #self.send_a_notificacion_http_v1( token , iuv  )
+            self.send_a_data_message_sdk_admin("iuv",iuv, token)
             
         
         
